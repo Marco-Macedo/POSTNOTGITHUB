@@ -1,5 +1,6 @@
 package com.example.postnot
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,10 +12,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.lang.Boolean.TRUE
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
     // Variáveis globais //
     private lateinit var auth: FirebaseAuth
+    private var loginuser : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,9 @@ class MainActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val user = auth.currentUser
                         updateUI(user)
+                        loginuser = 1
                     } else {
+                        loginuser = 0
                         Toast.makeText(baseContext, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                         updateUI(null)
@@ -64,6 +70,13 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser      // AUTENTICAÇÃO AUTOMATICA
+        if(currentUser != null)
+        {
+            loginuser = 1
+        }else
+        {
+            loginuser = 0
+        }
         updateUI(currentUser)           // diz qual o user logado, caso exista...
     }
 
@@ -72,7 +85,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        if(currentUser != null){
+        var token = getSharedPreferences("login", Context.MODE_PRIVATE)
+        var editor = token.edit()
+        editor.putInt("loginuser",loginuser)
+        editor.commit()
+
+        if(currentUser != null && loginuser == 1){
             if(currentUser.isEmailVerified) {           // EMAIL É VERIFICADO?? Entra na
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()    // close app
