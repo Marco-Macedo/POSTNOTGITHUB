@@ -3,6 +3,7 @@ package com.example.postnot
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -54,8 +55,14 @@ class SignUpActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(registaremail.text.toString(), registarpassword.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    startActivity(Intent(this,MainActivity::class.java))
-                    finish()
+                    val user = auth.currentUser
+                    user!!.sendEmailVerification()          // envia um email de verificacao
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {            // email verificado? volta para a mainactivity e e-mail está agora verificado
+                                startActivity(Intent(this,MainActivity::class.java))
+                                finish()
+                            }
+                        }
                 } else {
                     Toast.makeText(baseContext, "Sign Up failed. Try again after some time.", Toast.LENGTH_SHORT).show()
                 }
