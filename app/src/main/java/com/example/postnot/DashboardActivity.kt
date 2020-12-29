@@ -2,12 +2,11 @@ package com.example.postnot
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class DashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +25,10 @@ class DashboardActivity : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.logout -> {
+               /* var token = getSharedPreferences("myKey", Context.MODE_PRIVATE)
+                var editor = token.edit()
+                editor.putString("firebasekey"," ")        // Iguala valor a vazio, fica sem valor, credenciais soltas
+                editor.commit()*/
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 true

@@ -1,14 +1,17 @@
 package com.example.postnot
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import kotlinx.android.synthetic.main.activity_sign_up.*
+
 
 class SignUpActivity : AppCompatActivity() {
     // Variáveis globais //
@@ -17,7 +20,7 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
-        auth = FirebaseAuth.getInstance()
+
     }
 
     fun registo(view: View)
@@ -52,19 +55,26 @@ class SignUpActivity : AppCompatActivity() {
         //*********************************************************************************
         // CRIAR REGISTO
 
-        auth.createUserWithEmailAndPassword(registaremail.text.toString(), registarpassword.text.toString())
+        auth.createUserWithEmailAndPassword(
+            registaremail.text.toString(),
+            registarpassword.text.toString()
+        )
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     user!!.sendEmailVerification()          // envia um email de verificacao
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {            // email verificado? volta para a mainactivity e e-mail está agora verificado
-                                startActivity(Intent(this,MainActivity::class.java))
+                                startActivity(Intent(this, MainActivity::class.java))
                                 finish()
                             }
                         }
                 } else {
-                    Toast.makeText(baseContext, "Sign Up failed. Try again after some time.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext,
+                        "Sign Up failed. Try again after some time.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }

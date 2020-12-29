@@ -2,6 +2,7 @@ package com.example.postnot
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +25,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         auth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
+        var sharedPref: SharedPreferences? = null
 
+        FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val firebaseUser = firebaseAuth.currentUser
+            if (firebaseUser != null) {
+                val userEmail = firebaseUser.email
+
+
+                var sharedPref = getSharedPreferences("myKey", MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("firebasekey", userEmail)
+                editor.commit()
+            }
+        }
     }
 
     fun login(view: View) {
