@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 
 class DashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,11 +26,7 @@ class DashboardActivity : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.logout -> {
-                var token = getSharedPreferences("login", Context.MODE_PRIVATE)
-                var editor = token.edit()
-                editor.putInt("loginuser",0)        // Iguala valor a 0, fica sem valor, credenciais soltas
-                editor.commit()                                     // Atualizar editor
-                val intent = Intent(this@DashboardActivity, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 true
             }

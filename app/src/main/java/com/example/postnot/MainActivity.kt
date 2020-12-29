@@ -18,12 +18,13 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity() {
     // Variáveis globais //
     private lateinit var auth: FirebaseAuth
-    private var loginuser : Int = 0
+  //  private var loginuser : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         auth = FirebaseAuth.getInstance()
+
     }
 
     fun login(view: View) {
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun doLogin() {
         // VALIDAR EMAIL E PASSWORD
+
+
         if(email.text.toString().isEmpty()) {
             email.error = "Please enter email"
             email.requestFocus()
@@ -51,14 +54,15 @@ class MainActivity : AppCompatActivity() {
             password.requestFocus()
             return
         }
+
         auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
                         updateUI(user)
-                        loginuser = 1
+
                     } else {
-                        loginuser = 0
+
                         Toast.makeText(baseContext, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                         updateUI(null)
@@ -66,33 +70,25 @@ class MainActivity : AppCompatActivity() {
                 }
     }
 
-    public override fun onStart() {
+    /*public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser      // AUTENTICAÇÃO AUTOMATICA
-        if(currentUser != null)
-        {
-            loginuser = 1
-        }else
-        {
-            loginuser = 0
-        }
-        updateUI(currentUser)           // diz qual o user logado, caso exista...
-    }
+
+            val currentUser = auth.currentUser      // AUTENTICAÇÃO AUTOMATICA
+            updateUI(currentUser)           // diz qual o user logado, caso exista...
+
+
+    }*/
 
     fun registar(view: View) {
         startActivity(Intent(this, SignUpActivity::class.java))
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        var token = getSharedPreferences("login", Context.MODE_PRIVATE)
-        var editor = token.edit()
-        editor.putInt("loginuser",loginuser)
-        editor.commit()
 
-        if(currentUser != null && loginuser == 1){
+        if(currentUser != null){
             if(currentUser.isEmailVerified) {           // EMAIL É VERIFICADO?? Entra na
                 startActivity(Intent(this, DashboardActivity::class.java))
+                Toast.makeText(this, email.text.toString(), Toast.LENGTH_SHORT).show()
                 finish()    // close app
             }else{
                 Toast.makeText(
