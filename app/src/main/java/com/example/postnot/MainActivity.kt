@@ -11,6 +11,10 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.lang.Boolean.TRUE
@@ -28,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         var sharedPref: SharedPreferences? = null
 
+        var arduino =
         FirebaseAuth.AuthStateListener { firebaseAuth ->
             val firebaseUser = firebaseAuth.currentUser
             if (firebaseUser != null) {
@@ -40,6 +45,26 @@ class MainActivity : AppCompatActivity() {
                 editor.commit()
             }
         }
+
+        val firebaseDatabase = FirebaseDatabase.getInstance();
+        val reference = firebaseDatabase.getReference()
+        reference.child("Arduino").addValueEventListener(object : ValueEventListener{
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val children = dataSnapshot.children
+
+                children.forEach {
+                    Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_LONG).show()
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        )
     }
 
     fun login(view: View) {
